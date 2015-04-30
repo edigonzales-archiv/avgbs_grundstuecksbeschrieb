@@ -13,6 +13,28 @@ WHERE bb.tid = gebnum.gebaeudenummer_von;
 */
 
 
+SELECT bb.tid, gebnum.gwr_egid, bb.gem_bfs
+FROM 
+(
+ SELECT tid, gem_bfs
+ FROM av_avdpool_ch.bodenbedeckung_boflaeche
+ WHERE gem_bfs = 2401
+ AND art = 0
+) as bb
+LEFT OUTER JOIN 
+(
+ SELECT gwr_egid, gebaeudenummer_von
+ FROM av_avdpool_ch.bodenbedeckung_gebaeudenummer 
+ WHERE gem_bfs = 2401
+) as gebnum 
+ON bb.tid = gebnum.gebaeudenummer_von
+ORDER BY bb.tid
+
+SELECT *
+FROM av_avdpool_ch.bodenbedeckung_boflaeche
+WHERE gem_bfs = 2401 
+AND art = 0
+
 
 WITH geb AS (
  SELECT bb.tid, gebnum.gwr_egid, bb.geometrie, bb.gem_bfs

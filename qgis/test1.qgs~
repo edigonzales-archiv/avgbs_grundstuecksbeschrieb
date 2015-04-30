@@ -26,10 +26,10 @@
   <mapcanvas>
     <units>meters</units>
     <extent>
-      <xmin>607913.71100927190855145</xmin>
-      <ymin>230014.60667304359958507</ymin>
-      <xmax>608305.180508301127702</xmax>
-      <ymax>230262.52853972036973573</ymax>
+      <xmin>607967.80766813887748867</xmin>
+      <ymin>230104.35291593943838961</ymin>
+      <xmax>608115.64864386117551476</xmax>
+      <ymax>230275.25865222225547768</ymax>
     </extent>
     <rotation>0</rotation>
     <projections>0</projections>
@@ -90,6 +90,30 @@
       </filegroup>
     </legendlayer>
   </legend>
+  <mapcanvas>
+    <units>degrees</units>
+    <extent>
+      <xmin>0</xmin>
+      <ymin>0</ymin>
+      <xmax>0</xmax>
+      <ymax>0</ymax>
+    </extent>
+    <rotation>0</rotation>
+    <projections>0</projections>
+    <destinationsrs>
+      <spatialrefsys>
+        <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
+        <srsid>3452</srsid>
+        <srid>4326</srid>
+        <authid>EPSG:4326</authid>
+        <description>WGS 84</description>
+        <projectionacronym>longlat</projectionacronym>
+        <ellipsoidacronym>WGS84</ellipsoidacronym>
+        <geographicflag>true</geographicflag>
+      </spatialrefsys>
+    </destinationsrs>
+    <layer_coordinate_transform_info/>
+  </mapcanvas>
   <projectlayers layercount="6">
     <maplayer minimumScale="0" maximumScale="1e+08" type="raster" hasScaleBasedVisibilityFlag="0">
       <id>ch_so_agi_grundbuchplan_grau20150429181051316</id>
@@ -1007,8 +1031,12 @@
         <value>plzortschaft_plz620150429190103754</value>
         <value>plzortschaft_ortschaft20150429190104700</value>
         <value>gemeindegrenzen_gemeindegrenze20150429190355596</value>
+        <value>gebaeudeadressen_gebaeudeeingang20150429193019817</value>
+        <value>gebaeudeadressen_hausnummerpos20150429193025292</value>
       </LayerSnappingList>
       <LayerSnappingEnabledList type="QStringList">
+        <value>disabled</value>
+        <value>disabled</value>
         <value>disabled</value>
         <value>disabled</value>
         <value>disabled</value>
@@ -1019,8 +1047,12 @@
         <value>1</value>
         <value>1</value>
         <value>1</value>
+        <value>1</value>
+        <value>1</value>
       </LayerSnappingToleranceUnitList>
       <LayerSnapToList type="QStringList">
+        <value>to_vertex_and_segment</value>
+        <value>to_vertex_and_segment</value>
         <value>to_vertex_and_segment</value>
         <value>to_vertex_and_segment</value>
         <value>to_vertex_and_segment</value>
@@ -1028,6 +1060,8 @@
       <DefaultSnapType type="QString">off</DefaultSnapType>
       <DefaultSnapTolerance type="double">20</DefaultSnapTolerance>
       <LayerSnappingToleranceList type="QStringList">
+        <value>20.000000</value>
+        <value>20.000000</value>
         <value>20.000000</value>
         <value>20.000000</value>
         <value>20.000000</value>
