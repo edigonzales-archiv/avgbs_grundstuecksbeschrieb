@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>tr_adressen</name>
+    <name>tr_t_gebaeude_gebnum</name>
     <description/>
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
+    <trans_status>0</trans_status>
     <directory>&#x2f;</directory>
     <parameters>
     </parameters>
@@ -71,27 +72,6 @@
   <modified_date>2015&#x2f;04&#x2f;30 21&#x3a;28&#x3a;24.587</modified_date>
   </info>
   <notepads>
-    <notepad>
-      <note>Das ist nur f&#xfc;r definitiv, offizielle und g&#xfc;ltige Geb&#xe4;ude.</note>
-      <xloc>100</xloc>
-      <yloc>381</yloc>
-      <width>328</width>
-      <heigth>27</heigth>
-      <fontname>Droid Sans</fontname>
-      <fontsize>10</fontsize>
-      <fontbold>N</fontbold>
-      <fontitalic>N</fontitalic>
-      <fontcolorred>0</fontcolorred>
-      <fontcolorgreen>0</fontcolorgreen>
-      <fontcolorblue>0</fontcolorblue>
-      <backgroundcolorred>255</backgroundcolorred>
-      <backgroundcolorgreen>205</backgroundcolorgreen>
-      <backgroundcolorblue>112</backgroundcolorblue>
-      <bordercolorred>100</bordercolorred>
-      <bordercolorgreen>100</bordercolorgreen>
-      <bordercolorblue>100</bordercolorblue>
-      <drawshadow>Y</drawshadow>
-    </notepad>
   </notepads>
   <connection>
     <name>xanadu &#x28;ro&#x29;</name>
@@ -117,7 +97,32 @@
       <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
     </attributes>
   </connection>
+  <connection>
+    <name>xanadu &#x28;w&#x29;</name>
+    <server>localhost</server>
+    <type>POSTGRESQL</type>
+    <access>Native</access>
+    <database>xanadu</database>
+    <port>5432</port>
+    <username>stefan</username>
+    <password>Encrypted 2be98afc86aa7f29ea21ca97cdb80fe88</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>5432</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>N</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
   <order>
+  <hop> <from>Get rows from result</from><to>t_gebaeude_gebnum</to><enabled>Y</enabled> </hop>
   </order>
   <step>
     <name>Get rows from result</name>
@@ -133,6 +138,41 @@
     <fields>      </fields>     <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
       <xloc>94</xloc>
+      <yloc>174</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>t_gebaeude_gebnum</name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>xanadu &#x28;w&#x29;</connection>
+    <execute_each_row>Y</execute_each_row>
+    <single_statement>N</single_statement>
+    <replace_variables>Y</replace_variables>
+    <quoteString>N</quoteString>
+    <sql>DELETE FROM av2gb_work.t_gebaeude_gebnum WHERE gem_bfs &#x3d; &#x3f;&#x3b;&#xa;&#xa;INSERT INTO av2gb_work.t_gebaeude_gebnum &#x28;tid, gwr_egid, gem_bfs, geometrie&#x29;&#xa;SELECT bb.tid, gebnum.gwr_egid, bb.gem_bfs, bb.geometrie&#xa;FROM &#xa;&#x28;&#xa; SELECT tid, gem_bfs, geometrie&#xa; FROM av_avdpool_ch.bodenbedeckung_boflaeche&#xa; WHERE gem_bfs &#x3d; &#x3f;&#xa; AND art &#x3d; 0&#xa;&#x29; as bb&#xa;LEFT OUTER JOIN &#xa;&#x28;&#xa; SELECT gwr_egid, gebaeudenummer_von&#xa; FROM av_avdpool_ch.bodenbedeckung_gebaeudenummer &#xa; WHERE gem_bfs &#x3d; &#x3f;&#xa;&#x29; as gebnum &#xa;ON bb.tid &#x3d; gebnum.gebaeudenummer_von&#xa;ORDER BY bb.tid&#x3b;</sql>
+    <set_params>N</set_params>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+       <argument><name>gem_bfs</name></argument>
+       <argument><name>gem_bfs</name></argument>
+       <argument><name>gem_bfs</name></argument>
+    </arguments>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>386</xloc>
       <yloc>174</yloc>
       <draw>Y</draw>
       </GUI>

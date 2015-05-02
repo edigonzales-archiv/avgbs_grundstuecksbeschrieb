@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>tr_adressen</name>
+    <name>tr_t_adr_plz_ort</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -66,32 +66,11 @@
     <clusterschemas>
     </clusterschemas>
   <created_user>-</created_user>
-  <created_date>2015&#x2f;04&#x2f;30 21&#x3a;28&#x3a;24.587</created_date>
+  <created_date>2015&#x2f;05&#x2f;02 16&#x3a;56&#x3a;15.575</created_date>
   <modified_user>-</modified_user>
-  <modified_date>2015&#x2f;04&#x2f;30 21&#x3a;28&#x3a;24.587</modified_date>
+  <modified_date>2015&#x2f;05&#x2f;02 16&#x3a;56&#x3a;15.575</modified_date>
   </info>
   <notepads>
-    <notepad>
-      <note>Das ist nur f&#xfc;r definitiv, offizielle und g&#xfc;ltige Geb&#xe4;ude.</note>
-      <xloc>100</xloc>
-      <yloc>381</yloc>
-      <width>328</width>
-      <heigth>27</heigth>
-      <fontname>Droid Sans</fontname>
-      <fontsize>10</fontsize>
-      <fontbold>N</fontbold>
-      <fontitalic>N</fontitalic>
-      <fontcolorred>0</fontcolorred>
-      <fontcolorgreen>0</fontcolorgreen>
-      <fontcolorblue>0</fontcolorblue>
-      <backgroundcolorred>255</backgroundcolorred>
-      <backgroundcolorgreen>205</backgroundcolorgreen>
-      <backgroundcolorblue>112</backgroundcolorblue>
-      <bordercolorred>100</bordercolorred>
-      <bordercolorgreen>100</bordercolorgreen>
-      <bordercolorblue>100</bordercolorblue>
-      <drawshadow>Y</drawshadow>
-    </notepad>
   </notepads>
   <connection>
     <name>xanadu &#x28;ro&#x29;</name>
@@ -117,7 +96,32 @@
       <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
     </attributes>
   </connection>
+  <connection>
+    <name>xanadu &#x28;w&#x29;</name>
+    <server>localhost</server>
+    <type>POSTGRESQL</type>
+    <access>Native</access>
+    <database>xanadu</database>
+    <port>5432</port>
+    <username>stefan</username>
+    <password>Encrypted 2be98afc86aa7f29ea21ca97cdb80fe88</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>5432</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>N</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
   <order>
+  <hop> <from>Get rows from result</from><to>t_adr_plz_ort</to><enabled>Y</enabled> </hop>
   </order>
   <step>
     <name>Get rows from result</name>
@@ -132,8 +136,47 @@
            </partitioning>
     <fields>      </fields>     <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>94</xloc>
-      <yloc>174</yloc>
+      <xloc>142</xloc>
+      <yloc>134</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>t_adr_plz_ort</name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>xanadu &#x28;w&#x29;</connection>
+    <execute_each_row>Y</execute_each_row>
+    <single_statement>N</single_statement>
+    <replace_variables>Y</replace_variables>
+    <quoteString>N</quoteString>
+    <sql>DELETE FROM av2gb_work.t_adr_plz_ort WHERE gem_bfs &#x3d; &#x3f;&#x3b;&#xa;&#xa;INSERT INTO av2gb_work.t_adr_plz_ort &#x28;lokalisationsname, hausnummer, plz, zusatzziffern, ortschaft, gebaeudeeingang_von, status, inaenderung, attributeprovisorisch, istoffiziellebezeichnung, lage, hoehenlage, im_gebaeude, gwr_egid, gwr_edid, lokalisationsart, gem_bfs&#x29;&#xa;&#xa;WITH adr AS &#x28;&#xa;SELECT ein.&#x2a;, lokname.text as atext, lok.art as lokalisationsart&#xa;FROM av_avdpool_ch.gebaeudeadressen_gebaeudeeingang as ein, av_avdpool_ch.gebaeudeadressen_lokalisationsname as lokname, av_avdpool_ch.gebaeudeadressen_lokalisation as lok&#xa;WHERE ein.gem_bfs &#x3d; &#x3f;&#xa;AND lokname.gem_bfs &#x3d; &#x3f;&#xa;AND lok.gem_bfs &#x3d; &#x3f;&#xa;AND ein.gebaeudeeingang_von &#x3d; lokname.benannte&#xa;AND lok.tid &#x3d; ein.gebaeudeeingang_von&#xa;&#x29;,&#xa;ort AS &#x28;&#xa; SELECT os.flaeche, osname.atext&#xa; FROM plz_ortschaft.plzortschaft_ortschaft as os, plz_ortschaft.plzortschaft_ortschaftsname as osname, av_avdpool_ch.gemeindegrenzen_gemeindegrenze as gem&#xa; WHERE gem.gem_bfs &#x3d; &#x3f;&#xa; AND ST_Intersects&#x28;gem.geometrie, os.flaeche&#x29;&#xa; AND os.t_id &#x3d; osname.ortschaftsname_von&#xa; AND os.status IN &#x28;0,1&#x29;&#xa; AND os.inaenderung &#x3d; 1&#xa;&#x29;,&#xa;plz AS &#x28;&#xa; SELECT plz, zusatzziffern, flaeche&#xa; FROM plz_ortschaft.plzortschaft_plz6 as plz, av_avdpool_ch.gemeindegrenzen_gemeindegrenze as gem&#xa; WHERE gem.gem_bfs &#x3d; &#x3f;&#xa; AND ST_Intersects&#x28;gem.geometrie, plz.flaeche&#x29;&#xa; AND plz.status IN &#x28;0,1&#x29;&#xa; AND plz.inaenderung &#x3d; 1&#xa;&#x29;&#xa;SELECT adr.atext, adr.hausnummer, plz.plz, plz.zusatzziffern, ort.atext, adr.gebaeudeeingang_von, adr.status, &#xa;       adr.inaenderung, adr.attributeprovisorisch, adr.istoffiziellebezeichnung, adr.lage, adr.hoehenlage, &#xa;       adr.im_gebaeude, adr.gwr_egid, adr.gwr_edid, &#xa;       adr.lokalisationsart, adr.gem_bfs&#xa;FROM adr, ort, plz&#xa;WHERE adr.gem_bfs &#x3d; &#x3f;&#xa;AND ST_Intersects&#x28;adr.lage, ort.flaeche&#x29;&#xa;AND ST_Intersects&#x28;adr.lage, plz.flaeche&#x29;&#xa;ORDER BY ort.atext, adr.atext, adr.hausnummer&#x3b;</sql>
+    <set_params>N</set_params>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+       <argument><name>gem_bfs</name></argument>
+       <argument><name>gem_bfs</name></argument>
+       <argument><name>gem_bfs</name></argument>
+       <argument><name>gem_bfs</name></argument>
+       <argument><name>gem_bfs</name></argument>
+       <argument><name>gem_bfs</name></argument>
+       <argument><name>gem_bfs</name></argument>
+    </arguments>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>434</xloc>
+      <yloc>134</yloc>
       <draw>Y</draw>
       </GUI>
     </step>

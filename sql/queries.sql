@@ -1,4 +1,53 @@
-﻿-- doppelte egid in boflaeche
+﻿DELETE FROM av2gb_work.t_gebaeude_gebnum;
+
+
+/*
+CREATE SCHEMA av2gb_work
+  AUTHORIZATION stefan;
+
+GRANT ALL ON SCHEMA av2gb_work TO stefan;
+GRANT USAGE ON SCHEMA av2gb_work TO mspublic;
+
+DROP TABLE av2gb_work.t_gebaeude_gebnum;
+CREATE TABLE av2gb_work.t_gebaeude_gebnum
+(
+  ogc_fid serial NOT NULL,
+  tid character varying,
+  gwr_egid double precision,
+  geometrie geometry(Polygon,21781),
+  gem_bfs integer,
+  CONSTRAINT av2gb_work_t_gebaeude_gebnum_pkey PRIMARY KEY (ogc_fid)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE av2gb_work.t_gebaeude_gebnum
+  OWNER TO stefan;
+GRANT ALL ON TABLE av2gb_work.t_gebaeude_gebnum TO stefan;
+GRANT SELECT ON TABLE av2gb_work.t_gebaeude_gebnum TO mspublic;
+
+CREATE INDEX idx_av2gb_work_t_gebaeude_gebnum_ogc_fid
+  ON av2gb_work.t_gebaeude_gebnum
+  USING btree
+  (ogc_fid);
+
+CREATE INDEX idx_av2gb_work_t_gebaeude_gebnum_tid
+  ON av2gb_work.t_gebaeude_gebnum
+  USING btree
+  (tid);  
+  
+CREATE INDEX idx_av2gb_work_t_gebaeude_gebnum_gem_bfs
+  ON av2gb_work.t_gebaeude_gebnum
+  USING btree
+  (gem_bfs);
+
+CREATE INDEX idx_av2gb_work_t_gebaeude_gebnum_geometrie
+  ON av2gb_work.t_gebaeude_gebnum
+  USING gist
+  (geometrie);
+*/
+
+-- doppelte egid in boflaeche
 /*
 SELECT bb.*
 FROM
