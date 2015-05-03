@@ -128,7 +128,7 @@
     <name>Get rows from result</name>
     <type>RowsFromResult</type>
     <description/>
-    <distribute>Y</distribute>
+    <distribute>N</distribute>
     <custom_distribution/>
     <copies>1</copies>
          <partitioning>
@@ -159,7 +159,7 @@
     <single_statement>N</single_statement>
     <replace_variables>Y</replace_variables>
     <quoteString>N</quoteString>
-    <sql>DELETE FROM av2gb_work.t_geb_adr WHERE gem_bfs &#x3d; &#x3f;&#x3b;&#xa;&#xa;INSERT INTO av2gb_work.t_geb_adr &#x28;geb_tid, geb_gwr_egid, lokalisationsname, hausnummer, plz, zusatzziffern, ortschaft, adr_gwr_egid, gwr_edid, lokalisationsart, geometrie, lage, gem_bfs&#x29;&#xa;&#xa;WITH adr AS &#x28;&#xa; SELECT &#x2a;&#xa; FROM av2gb_work.t_adr_plz_ort&#xa; WHERE gem_bfs &#x3d; &#x3f;&#xa; AND status &#x3d; 1                     -- 0&#x3a; projektiert &#x2f; 1&#x3a; real&#xa; AND inaenderung &#x3d; 1                -- 0&#x3a; ja &#x2f; 1&#x3a; nein&#xa; AND attributeprovisorisch &#x3d; 1      -- 0&#x3a; ja &#x2f; 1&#x3a; nein&#xa; AND istoffiziellebezeichnung &#x3d; 0   -- 0&#x3a; ja &#x2f; 1&#x3a; nein&#xa; AND im_gebaeude &#x3d; 0                -- 0&#x3a; BB &#x2f; 1&#x3a; EO&#xa;&#x29;,&#xa;geb AS &#x28;&#xa; SELECT &#x2a;&#xa; FROM av2gb_work.t_gebaeude_gebnum&#xa; WHERE gem_bfs &#x3d; &#x3f;&#xa;&#x29;&#xa;SELECT geb.tid as geb_tid, geb.gwr_egid as geb_gwr_egid, adr.lokalisationsname, &#xa;       adr.hausnummer, adr.plz, adr.zusatzziffern, adr.ortschaft, &#xa;       adr.gwr_egid as adr_gwr_egid, adr.gwr_edid, adr.lokalisationsart,&#xa;       geb.geometrie, adr.lage, geb.gem_bfs&#xa;FROM geb LEFT OUTER JOIN adr ON ST_Intersects&#x28;geb.geometrie, adr.lage&#x29;&#xa;ORDER BY geb.gem_bfs, adr.plz, adr.lokalisationsname, adr.hausnummer&#x3b;</sql>
+    <sql>DELETE FROM av_gb2av_work.t_geb_adr WHERE gem_bfs &#x3d; &#x3f;&#x3b;&#xa;&#xa;INSERT INTO av_gb2av_work.t_geb_adr &#x28;geb_tid, geb_gwr_egid, lokalisationsname, hausnummer, plz, zusatzziffern, ortschaft, adr_gwr_egid, gwr_edid, lokalisationsart, geometrie, lage, gem_bfs&#x29;&#xa;&#xa;WITH adr AS &#x28;&#xa; SELECT &#x2a;&#xa; FROM av_gb2av_work.t_adr_plz_ort&#xa; WHERE gem_bfs &#x3d; &#x3f;&#xa; AND status &#x3d; 1                     -- 0&#x3a; projektiert &#x2f; 1&#x3a; real&#xa; AND inaenderung &#x3d; 1                -- 0&#x3a; ja &#x2f; 1&#x3a; nein&#xa; AND attributeprovisorisch &#x3d; 1      -- 0&#x3a; ja &#x2f; 1&#x3a; nein&#xa; AND istoffiziellebezeichnung &#x3d; 0   -- 0&#x3a; ja &#x2f; 1&#x3a; nein&#xa; AND im_gebaeude &#x3d; 0                -- 0&#x3a; BB &#x2f; 1&#x3a; EO&#xa;&#x29;,&#xa;geb AS &#x28;&#xa; SELECT &#x2a;&#xa; FROM av_gb2av_work.t_gebaeude_gebnum&#xa; WHERE gem_bfs &#x3d; &#x3f;&#xa;&#x29;&#xa;SELECT geb.tid as geb_tid, geb.gwr_egid as geb_gwr_egid, adr.lokalisationsname, &#xa;       adr.hausnummer, adr.plz, adr.zusatzziffern, adr.ortschaft, &#xa;       adr.gwr_egid as adr_gwr_egid, adr.gwr_edid, adr.lokalisationsart,&#xa;       geb.geometrie, adr.lage, geb.gem_bfs&#xa;FROM geb LEFT OUTER JOIN adr ON ST_Intersects&#x28;geb.geometrie, adr.lage&#x29;&#xa;ORDER BY geb.gem_bfs, adr.plz, adr.lokalisationsname, adr.hausnummer&#x3b;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

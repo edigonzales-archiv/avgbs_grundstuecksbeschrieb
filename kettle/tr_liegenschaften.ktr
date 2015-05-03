@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>tr_adressen</name>
+    <name>tr_liegenschaften</name>
     <description/>
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
+    <trans_status>0</trans_status>
     <directory>&#x2f;</directory>
     <parameters>
     </parameters>
@@ -66,17 +67,17 @@
     <clusterschemas>
     </clusterschemas>
   <created_user>-</created_user>
-  <created_date>2015&#x2f;04&#x2f;30 21&#x3a;28&#x3a;24.587</created_date>
+  <created_date>2015&#x2f;05&#x2f;02 20&#x3a;54&#x3a;53.498</created_date>
   <modified_user>-</modified_user>
-  <modified_date>2015&#x2f;04&#x2f;30 21&#x3a;28&#x3a;24.587</modified_date>
+  <modified_date>2015&#x2f;05&#x2f;02 20&#x3a;54&#x3a;53.498</modified_date>
   </info>
   <notepads>
     <notepad>
-      <note>Das ist nur f&#xfc;r definitiv, offizielle und g&#xfc;ltige Geb&#xe4;ude.</note>
-      <xloc>100</xloc>
-      <yloc>381</yloc>
-      <width>328</width>
-      <heigth>27</heigth>
+      <note>Every real estate &#x28;&#x22;Liegenschaft&#x22;&#x29; per community&#x3a;&#xa;- get all communities&#xa;- for every community loop through the real estats &#x28;&#x22;liegenschaften_liegenschaft&#x22;&#x29;</note>
+      <xloc>110</xloc>
+      <yloc>37</yloc>
+      <width>494</width>
+      <heigth>61</heigth>
       <fontname>Droid Sans</fontname>
       <fontsize>10</fontsize>
       <fontbold>N</fontbold>
@@ -117,11 +118,37 @@
       <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
     </attributes>
   </connection>
+  <connection>
+    <name>xanadu &#x28;w&#x29;</name>
+    <server>localhost</server>
+    <type>POSTGRESQL</type>
+    <access>Native</access>
+    <database>xanadu</database>
+    <port>5432</port>
+    <username>stefan</username>
+    <password>Encrypted 2be98afc86aa7f29ea21ca97cdb80fe88</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>5432</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>N</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
   <order>
+  <hop> <from>get all communities numbers</from><to>get all real estates</to><enabled>Y</enabled> </hop>
+  <hop> <from>get all real estates</from><to>Copy rows to result</to><enabled>Y</enabled> </hop>
   </order>
   <step>
-    <name>Get rows from result</name>
-    <type>RowsFromResult</type>
+    <name>Copy rows to result</name>
+    <type>RowsToResult</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -130,10 +157,62 @@
            <method>none</method>
            <schema_name/>
            </partitioning>
-    <fields>      </fields>     <cluster_schema/>
+     <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>94</xloc>
-      <yloc>174</yloc>
+      <xloc>563</xloc>
+      <yloc>147</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>get all communities numbers</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>xanadu &#x28;ro&#x29;</connection>
+    <sql>SELECT gem_bfs, gem_bfs as gem_bfs_2&#xa;FROM av_avdpool_ch.gemeindegrenzen_gemeinde&#xa;--WHERE gem_bfs &#x3d; 2401&#xa;--WHERE gem_bfs &#x3d; 2544 &#xa;WHERE gem_bfs &#x3d; 2549&#xa;ORDER BY gem_bfs&#xa;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>129</xloc>
+      <yloc>150</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>get all real estates</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>xanadu &#x28;ro&#x29;</connection>
+    <sql>WITH lieg AS &#x28;&#xa; SELECT g.ogc_fid, g.nummer, g.nbident, g.egris_egrid, l.flaechenmass, g.gem_bfs--, l.geometrie&#xa; FROM av_avdpool_ch.liegenschaften_grundstueck as g, av_avdpool_ch.liegenschaften_liegenschaft as l&#xa; WHERE g.gem_bfs &#x3d; &#x3f;&#xa; AND l.gem_bfs &#x3d; &#x3f;&#xa; AND l.liegenschaft_von &#x3d; g.tid&#xa;&#x29;&#xa;SELECT &#x2a;&#xa;FROM lieg</sql>
+    <limit>0</limit>
+    <lookup>get all communities numbers</lookup>
+    <execute_each_row>Y</execute_each_row>
+    <variables_active>Y</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>368</xloc>
+      <yloc>149</yloc>
       <draw>Y</draw>
       </GUI>
     </step>

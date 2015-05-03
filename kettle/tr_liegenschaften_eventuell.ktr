@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>tr_t_adr_plz_ort</name>
+    <name>tr_liegenschaften_eventuell</name>
     <description/>
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
+    <trans_status>0</trans_status>
     <directory>&#x2f;</directory>
     <parameters>
     </parameters>
@@ -66,11 +67,32 @@
     <clusterschemas>
     </clusterschemas>
   <created_user>-</created_user>
-  <created_date>2015&#x2f;05&#x2f;02 16&#x3a;56&#x3a;15.575</created_date>
+  <created_date>2015&#x2f;05&#x2f;02 20&#x3a;54&#x3a;53.498</created_date>
   <modified_user>-</modified_user>
-  <modified_date>2015&#x2f;05&#x2f;02 16&#x3a;56&#x3a;15.575</modified_date>
+  <modified_date>2015&#x2f;05&#x2f;02 20&#x3a;54&#x3a;53.498</modified_date>
   </info>
   <notepads>
+    <notepad>
+      <note>Ok, das kann hier einfacher gemacht werden. Resp. muss noch nicht&#xa;f&#xfc;r das Speichern der Grundst&#xfc;cke in das Zielmodell verwendet werden.&#xa;&#xa;Vielleicht braucht man den Approach sp&#xe4;ter.</note>
+      <xloc>126</xloc>
+      <yloc>394</yloc>
+      <width>436</width>
+      <heigth>78</heigth>
+      <fontname>Droid Sans</fontname>
+      <fontsize>10</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
   </notepads>
   <connection>
     <name>xanadu &#x28;ro&#x29;</name>
@@ -121,11 +143,12 @@
     </attributes>
   </connection>
   <order>
-  <hop> <from>Get rows from result</from><to>t_adr_plz_ort</to><enabled>Y</enabled> </hop>
+  <hop> <from>get all communities numbers</from><to>get all real estates</to><enabled>Y</enabled> </hop>
+  <hop> <from>get all real estates</from><to>Copy rows to result</to><enabled>Y</enabled> </hop>
   </order>
   <step>
-    <name>Get rows from result</name>
-    <type>RowsFromResult</type>
+    <name>Copy rows to result</name>
+    <type>RowsToResult</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -134,17 +157,17 @@
            <method>none</method>
            <schema_name/>
            </partitioning>
-    <fields>      </fields>     <cluster_schema/>
+     <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>142</xloc>
-      <yloc>134</yloc>
+      <xloc>563</xloc>
+      <yloc>147</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
 
   <step>
-    <name>t_adr_plz_ort</name>
-    <type>ExecSQL</type>
+    <name>get all communities numbers</name>
+    <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -153,30 +176,43 @@
            <method>none</method>
            <schema_name/>
            </partitioning>
-    <connection>xanadu &#x28;w&#x29;</connection>
-    <execute_each_row>Y</execute_each_row>
-    <single_statement>N</single_statement>
-    <replace_variables>Y</replace_variables>
-    <quoteString>N</quoteString>
-    <sql>DELETE FROM av_gb2av_work.t_adr_plz_ort WHERE gem_bfs &#x3d; &#x3f;&#x3b;&#xa;&#xa;INSERT INTO av_gb2av_work.t_adr_plz_ort &#x28;lokalisationsname, hausnummer, plz, zusatzziffern, ortschaft, gebaeudeeingang_von, status, inaenderung, attributeprovisorisch, istoffiziellebezeichnung, lage, hoehenlage, im_gebaeude, gwr_egid, gwr_edid, lokalisationsart, gem_bfs&#x29;&#xa;&#xa;WITH adr AS &#x28;&#xa;SELECT ein.&#x2a;, lokname.text as atext, lok.art as lokalisationsart&#xa;FROM av_avdpool_ch.gebaeudeadressen_gebaeudeeingang as ein, av_avdpool_ch.gebaeudeadressen_lokalisationsname as lokname, av_avdpool_ch.gebaeudeadressen_lokalisation as lok&#xa;WHERE ein.gem_bfs &#x3d; &#x3f;&#xa;AND lokname.gem_bfs &#x3d; &#x3f;&#xa;AND lok.gem_bfs &#x3d; &#x3f;&#xa;AND ein.gebaeudeeingang_von &#x3d; lokname.benannte&#xa;AND lok.tid &#x3d; ein.gebaeudeeingang_von&#xa;&#x29;,&#xa;ort AS &#x28;&#xa; SELECT os.flaeche, osname.atext&#xa; FROM av_plz_ortschaft.plzortschaft_ortschaft as os, av_plz_ortschaft.plzortschaft_ortschaftsname as osname, av_avdpool_ch.gemeindegrenzen_gemeindegrenze as gem&#xa; WHERE gem.gem_bfs &#x3d; &#x3f;&#xa; AND ST_Intersects&#x28;gem.geometrie, os.flaeche&#x29;&#xa; AND os.t_id &#x3d; osname.ortschaftsname_von&#xa; AND os.status IN &#x28;0,1&#x29;&#xa; AND os.inaenderung &#x3d; 1&#xa;&#x29;,&#xa;plz AS &#x28;&#xa; SELECT plz, zusatzziffern, flaeche&#xa; FROM av_plz_ortschaft.plzortschaft_plz6 as plz, av_avdpool_ch.gemeindegrenzen_gemeindegrenze as gem&#xa; WHERE gem.gem_bfs &#x3d; &#x3f;&#xa; AND ST_Intersects&#x28;gem.geometrie, plz.flaeche&#x29;&#xa; AND plz.status IN &#x28;0,1&#x29;&#xa; AND plz.inaenderung &#x3d; 1&#xa;&#x29;&#xa;SELECT adr.atext, adr.hausnummer, plz.plz, plz.zusatzziffern, ort.atext, adr.gebaeudeeingang_von, adr.status, &#xa;       adr.inaenderung, adr.attributeprovisorisch, adr.istoffiziellebezeichnung, adr.lage, adr.hoehenlage, &#xa;       adr.im_gebaeude, adr.gwr_egid, adr.gwr_edid, &#xa;       adr.lokalisationsart, adr.gem_bfs&#xa;FROM adr, ort, plz&#xa;WHERE adr.gem_bfs &#x3d; &#x3f;&#xa;AND ST_Intersects&#x28;adr.lage, ort.flaeche&#x29;&#xa;AND ST_Intersects&#x28;adr.lage, plz.flaeche&#x29;&#xa;ORDER BY ort.atext, adr.atext, adr.hausnummer&#x3b;</sql>
-    <set_params>N</set_params>
-    <insert_field/>
-    <update_field/>
-    <delete_field/>
-    <read_field/>
-    <arguments>
-       <argument><name>gem_bfs</name></argument>
-       <argument><name>gem_bfs</name></argument>
-       <argument><name>gem_bfs</name></argument>
-       <argument><name>gem_bfs</name></argument>
-       <argument><name>gem_bfs</name></argument>
-       <argument><name>gem_bfs</name></argument>
-       <argument><name>gem_bfs</name></argument>
-    </arguments>
+    <connection>xanadu &#x28;ro&#x29;</connection>
+    <sql>SELECT gem_bfs, gem_bfs as gem_bfs_2&#xa;FROM av_avdpool_ch.gemeindegrenzen_gemeinde&#xa;--WHERE gem_bfs &#x3d; 2401&#xa;--WHERE gem_bfs &#x3d; 2544 &#xa;WHERE gem_bfs &#x3d; 2549&#xa;ORDER BY gem_bfs&#xa;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>434</xloc>
-      <yloc>134</yloc>
+      <xloc>129</xloc>
+      <yloc>150</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>get all real estates</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>xanadu &#x28;ro&#x29;</connection>
+    <sql>WITH lieg AS &#x28;&#xa; SELECT g.nummer, g.nbident, g.egris_egrid, g.gem_bfs, l.geometrie&#xa; FROM av_avdpool_ch.liegenschaften_grundstueck as g, av_avdpool_ch.liegenschaften_liegenschaft as l&#xa; WHERE g.gem_bfs &#x3d; &#x3f;&#xa; AND l.gem_bfs &#x3d; &#x3f;&#xa; AND l.liegenschaft_von &#x3d; g.tid&#xa;&#x29;&#xa;SELECT &#x2a;&#xa;FROM lieg</sql>
+    <limit>0</limit>
+    <lookup>get all communities numbers</lookup>
+    <execute_each_row>Y</execute_each_row>
+    <variables_active>Y</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>368</xloc>
+      <yloc>149</yloc>
       <draw>Y</draw>
       </GUI>
     </step>

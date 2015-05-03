@@ -1,0 +1,23 @@
+﻿WITH lieg AS (
+ SELECT g.ogc_fid, l.geometrie
+ FROM av_avdpool_ch.liegenschaften_grundstueck g, av_avdpool_ch.liegenschaften_liegenschaft l
+ WHERE g.gem_bfs = 2544
+ AND l.gem_bfs = 2544
+ AND g.tid = liegenschaft_von
+),
+geb AS (
+ SELECT ogc_fid, geometrie
+ FROM av_avdpool_ch.bodenbedeckung_boflaeche
+ WHERE gem_bfs = 2544
+ AND ogc_fid = 225516
+)
+
+SELECT *, round(ST_Area(geom)::numeric, 0) as flaechenmass
+FROM
+(
+ SELECT lieg.ogc_fid as l_ogc_fid, geb.ogc_fid as g_ogc_fid, 
+        (ST_Dump(ST_CollectionExtract(ST_Intersection(lieg.geometrie, geb.geometrie), 3))).geom
+ FROM lieg, geb
+ WHERE ST_Intersects(lieg.geometrie, geb.geometrie)
+) as a
+WHERE geometrytype(geom) = 'POLYGON';

@@ -159,7 +159,7 @@
     <single_statement>N</single_statement>
     <replace_variables>Y</replace_variables>
     <quoteString>N</quoteString>
-    <sql>DELETE FROM av2gb_work.t_gebaeude_gebnum WHERE gem_bfs &#x3d; &#x3f;&#x3b;&#xa;&#xa;INSERT INTO av2gb_work.t_gebaeude_gebnum &#x28;tid, gwr_egid, gem_bfs, geometrie&#x29;&#xa;SELECT bb.tid, gebnum.gwr_egid, bb.gem_bfs, bb.geometrie&#xa;FROM &#xa;&#x28;&#xa; SELECT tid, gem_bfs, geometrie&#xa; FROM av_avdpool_ch.bodenbedeckung_boflaeche&#xa; WHERE gem_bfs &#x3d; &#x3f;&#xa; AND art &#x3d; 0&#xa;&#x29; as bb&#xa;LEFT OUTER JOIN &#xa;&#x28;&#xa; SELECT gwr_egid, gebaeudenummer_von&#xa; FROM av_avdpool_ch.bodenbedeckung_gebaeudenummer &#xa; WHERE gem_bfs &#x3d; &#x3f;&#xa;&#x29; as gebnum &#xa;ON bb.tid &#x3d; gebnum.gebaeudenummer_von&#xa;ORDER BY bb.tid&#x3b;</sql>
+    <sql>DELETE FROM av_gb2av_work.t_gebaeude_gebnum WHERE gem_bfs &#x3d; &#x3f;&#x3b;&#xa;&#xa;INSERT INTO av_gb2av_work.t_gebaeude_gebnum &#x28;tid, gwr_egid, gem_bfs, geometrie&#x29;&#xa;SELECT bb.tid, gebnum.gwr_egid, bb.gem_bfs, bb.geometrie&#xa;FROM &#xa;&#x28;&#xa; SELECT tid, gem_bfs, geometrie&#xa; FROM av_avdpool_ch.bodenbedeckung_boflaeche&#xa; WHERE gem_bfs &#x3d; &#x3f;&#xa; AND art &#x3d; 0&#xa;&#x29; as bb&#xa;LEFT OUTER JOIN &#xa;&#x28;&#xa; SELECT gwr_egid, gebaeudenummer_von&#xa; FROM av_avdpool_ch.bodenbedeckung_gebaeudenummer &#xa; WHERE gem_bfs &#x3d; &#x3f;&#xa;&#x29; as gebnum &#xa;ON bb.tid &#x3d; gebnum.gebaeudenummer_von&#xa;ORDER BY bb.tid&#x3b;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
