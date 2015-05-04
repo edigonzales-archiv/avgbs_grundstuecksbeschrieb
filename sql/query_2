@@ -12,7 +12,7 @@ geb AS (
  AND ogc_fid = 225516
 )
 
-SELECT *, round(ST_Area(geom)::numeric, 0) as flaechenmass
+SELECT l_ogc_fid, g_ogc_fid, round(ST_Area(geom)::numeric, 0) as flaechenmass
 FROM
 (
  SELECT lieg.ogc_fid as l_ogc_fid, geb.ogc_fid as g_ogc_fid, 

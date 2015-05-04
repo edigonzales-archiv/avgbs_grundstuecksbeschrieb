@@ -72,11 +72,53 @@
   </info>
   <notepads>
     <notepad>
-      <note>Add sequence for the database primary key.</note>
-      <xloc>50</xloc>
-      <yloc>501</yloc>
-      <width>273</width>
-      <heigth>27</heigth>
+      <note>Add some constants&#x3a;&#xa;- istprojektiert &#x3d; FALSE&#xa;- istunterirdisch &#x3d; FALSE&#xa;- gebaeudeart &#x3d; &#x27;Gebaeude&#x27;</note>
+      <xloc>521</xloc>
+      <yloc>57</yloc>
+      <width>173</width>
+      <heigth>78</heigth>
+      <fontname>Droid Sans</fontname>
+      <fontsize>10</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
+    <notepad>
+      <note>Buildings can be written into directly &#x28;1&#x3a;1&#x29; into the table&#xa;&#x27;grundstuecksbeschrieb_gebaeude&#x27; without any modification.&#xa;Just add some constants &#x28;that could also be added in the SQL &#xa;query&#x29;.</note>
+      <xloc>57</xloc>
+      <yloc>53</yloc>
+      <width>378</width>
+      <heigth>78</heigth>
+      <fontname>Droid Sans</fontname>
+      <fontsize>10</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
+    <notepad>
+      <note>We need to get rid of duplicates because&#xa;the data is corrupt.</note>
+      <xloc>777</xloc>
+      <yloc>88</yloc>
+      <width>250</width>
+      <heigth>44</heigth>
       <fontname>Droid Sans</fontname>
       <fontsize>10</fontsize>
       <fontbold>N</fontbold>
@@ -143,7 +185,14 @@
   </connection>
   <order>
   <hop> <from>get all communities numbers</from><to>get all buildings</to><enabled>Y</enabled> </hop>
-  <hop> <from>get all buildings</from><to>bulding - real estate intersection</to><enabled>Y</enabled> </hop>
+  <hop> <from>get all buildings</from><to>Add constants</to><enabled>Y</enabled> </hop>
+  <hop> <from>get all buildings</from><to>Select gem_bfs, ogc_fid</to><enabled>Y</enabled> </hop>
+  <hop> <from>Select gem_bfs, ogc_fid</from><to>building -- real estate intersection</to><enabled>Y</enabled> </hop>
+  <hop> <from>Add database primary key</from><to>grundstuecksbeschrieb_grundstueckgebaeude</to><enabled>Y</enabled> </hop>
+  <hop> <from>building -- real estate intersection</from><to>Remove buildings parts with area &#x3d; 0</to><enabled>Y</enabled> </hop>
+  <hop> <from>Remove buildings parts with area &#x3d; 0</from><to>Add database primary key</to><enabled>Y</enabled> </hop>
+  <hop> <from>Add constants</from><to>Unique rows &#x28;ogc_fid&#x29;</to><enabled>Y</enabled> </hop>
+  <hop> <from>Unique rows &#x28;ogc_fid&#x29;</from><to>grundstuecksbeschrieb_gebaeude</to><enabled>Y</enabled> </hop>
   </order>
   <step>
     <name>get all communities numbers</name>
@@ -157,7 +206,7 @@
            <schema_name/>
            </partitioning>
     <connection>xanadu &#x28;ro&#x29;</connection>
-    <sql>SELECT gem_bfs &#xa;FROM av_avdpool_ch.gemeindegrenzen_gemeinde&#xa;--WHERE gem_bfs &#x3d; 2401&#xa;--WHERE gem_bfs &#x3d; 2544 &#xa;WHERE gem_bfs &#x3d; 2549&#xa;ORDER BY gem_bfs&#xa;</sql>
+    <sql>SELECT gem_bfs, gem_bfs &#xa;FROM av_avdpool_ch.gemeindegrenzen_gemeinde&#xa;--WHERE gem_bfs &#x3d; 2401&#xa;--WHERE gem_bfs &#x3d; 2544 &#xa;WHERE gem_bfs &#x3d; 2549&#xa;ORDER BY gem_bfs&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -165,8 +214,8 @@
     <lazy_conversion_active>N</lazy_conversion_active>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>116</xloc>
-      <yloc>105</yloc>
+      <xloc>101</xloc>
+      <yloc>192</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -175,7 +224,7 @@
     <name>get all buildings</name>
     <type>TableInput</type>
     <description/>
-    <distribute>Y</distribute>
+    <distribute>N</distribute>
     <custom_distribution/>
     <copies>1</copies>
          <partitioning>
@@ -183,7 +232,7 @@
            <schema_name/>
            </partitioning>
     <connection>xanadu &#x28;ro&#x29;</connection>
-    <sql>SELECT gem_bfs, ogc_fid&#xa;FROM av_avdpool_ch.bodenbedeckung_boflaeche&#xa;WHERE gem_bfs &#x3d; &#x3f; &#xa;AND art &#x3d; 0&#x3b;</sql>
+    <sql>SELECT bb.ogc_fid, gebnum.gwr_egid, bb.gem_bfs, round&#x28;ST_Area&#x28;bb.geometrie&#x29;&#x3a;&#x3a;numeric,0&#x29; as flaechenmass&#xa;FROM &#xa;&#x28;&#xa; SELECT ogc_fid, tid, gem_bfs, geometrie&#xa; FROM av_avdpool_ch.bodenbedeckung_boflaeche&#xa; WHERE gem_bfs &#x3d; &#x3f;&#xa; AND art &#x3d; 0&#xa;&#x29; as bb&#xa;LEFT OUTER JOIN &#xa;&#x28;&#xa; SELECT gwr_egid, gebaeudenummer_von&#xa; FROM av_avdpool_ch.bodenbedeckung_gebaeudenummer &#xa; WHERE gem_bfs &#x3d; &#x3f;&#xa;&#x29; as gebnum &#xa;ON bb.tid &#x3d; gebnum.gebaeudenummer_von&#xa;ORDER BY bb.ogc_fid&#x3b;</sql>
     <limit>0</limit>
     <lookup>get all communities numbers</lookup>
     <execute_each_row>Y</execute_each_row>
@@ -191,14 +240,169 @@
     <lazy_conversion_active>N</lazy_conversion_active>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>383</xloc>
-      <yloc>105</yloc>
+      <xloc>368</xloc>
+      <yloc>192</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
 
   <step>
-    <name>bulding - real estate intersection</name>
+    <name>Add constants</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>istprojektiert</name>
+        <type>Boolean</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>FALSE</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>istunterirdisch</name>
+        <type>Boolean</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>FALSE</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>gebaeudeart</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>Gebaeude</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>587</xloc>
+      <yloc>192</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>grundstuecksbeschrieb_gebaeude</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>xanadu &#x28;w&#x29;</connection>
+    <schema>_dev_gb2av_adr</schema>
+    <table>grundstuecksbeschrieb_gebaeude</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>N</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+        <field>
+          <column_name>t_id</column_name>
+          <stream_name>ogc_fid</stream_name>
+        </field>
+        <field>
+          <column_name>gwr_egid</column_name>
+          <stream_name>gwr_egid</stream_name>
+        </field>
+        <field>
+          <column_name>istprojektiert</column_name>
+          <stream_name>istprojektiert</stream_name>
+        </field>
+        <field>
+          <column_name>istunterirdisch</column_name>
+          <stream_name>istunterirdisch</stream_name>
+        </field>
+        <field>
+          <column_name>gebaeudeart</column_name>
+          <stream_name>gebaeudeart</stream_name>
+        </field>
+        <field>
+          <column_name>flaechenmass</column_name>
+          <stream_name>flaechenmass</stream_name>
+        </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>875</xloc>
+      <yloc>350</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Select gem_bfs, ogc_fid</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>gem_bfs</name>
+        <rename>gem_bfs_1</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>gem_bfs</name>
+        <rename>gem_bfs_2</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>gem_bfs</name>
+        <rename>gem_bfs_3</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ogc_fid</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>369</xloc>
+      <yloc>270</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>building -- real estate intersection</name>
     <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
@@ -209,16 +413,153 @@
            <schema_name/>
            </partitioning>
     <connection>xanadu &#x28;ro&#x29;</connection>
-    <sql>SELECT &#x2a;&#xa;FROM av_avdpool_ch.bodenbedeckung_boflaeche&#xa;WHERE gem_bfs &#x3d; &#x3f; &#xa;AND ogc_fid &#x3d; &#x3f;&#x3b;&#xa;</sql>
+    <sql>WITH lieg AS &#x28;&#xa; SELECT g.ogc_fid, l.geometrie&#xa; FROM av_avdpool_ch.liegenschaften_grundstueck g, av_avdpool_ch.liegenschaften_liegenschaft l&#xa; WHERE g.gem_bfs &#x3d; &#x3f;&#xa; AND l.gem_bfs &#x3d; &#x3f;&#xa; AND g.tid &#x3d; liegenschaft_von&#xa;&#x29;,&#xa;geb AS &#x28;&#xa; SELECT ogc_fid, geometrie&#xa; FROM av_avdpool_ch.bodenbedeckung_boflaeche&#xa; WHERE gem_bfs &#x3d; &#x3f;&#xa; AND ogc_fid &#x3d; &#x3f;&#xa;&#x29;&#xa;&#xa;SELECT l_ogc_fid, g_ogc_fid, round&#x28;ST_Area&#x28;geom&#x29;&#x3a;&#x3a;numeric, 0&#x29; as flaechenmass&#xa;FROM&#xa;&#x28;&#xa; SELECT lieg.ogc_fid as l_ogc_fid, geb.ogc_fid as g_ogc_fid, &#xa;        &#x28;ST_Dump&#x28;ST_CollectionExtract&#x28;ST_Intersection&#x28;lieg.geometrie, geb.geometrie&#x29;, 3&#x29;&#x29;&#x29;.geom&#xa; FROM lieg, geb&#xa; WHERE ST_Intersects&#x28;lieg.geometrie, geb.geometrie&#x29;&#xa;&#x29; as a&#xa;WHERE geometrytype&#x28;geom&#x29; &#x3d; &#x27;POLYGON&#x27;&#x3b;</sql>
     <limit>0</limit>
-    <lookup>get all buildings</lookup>
+    <lookup>Select gem_bfs, ogc_fid</lookup>
     <execute_each_row>Y</execute_each_row>
     <variables_active>Y</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>603</xloc>
-      <yloc>104</yloc>
+      <xloc>368</xloc>
+      <yloc>375</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>grundstuecksbeschrieb_grundstueckgebaeude</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>xanadu &#x28;w&#x29;</connection>
+    <schema>_dev_gb2av_adr</schema>
+    <table>grundstuecksbeschrieb_grundstueckgebaeude</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>N</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+        <field>
+          <column_name>t_id</column_name>
+          <stream_name>t_id</stream_name>
+        </field>
+        <field>
+          <column_name>gebaeude</column_name>
+          <stream_name>g_ogc_fid</stream_name>
+        </field>
+        <field>
+          <column_name>grundstueck</column_name>
+          <stream_name>l_ogc_fid</stream_name>
+        </field>
+        <field>
+          <column_name>flaechenmass</column_name>
+          <stream_name>flaechenmass</stream_name>
+        </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>373</xloc>
+      <yloc>503</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Add database primary key</name>
+    <type>Sequence</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <valuename>t_id</valuename>
+      <use_database>N</use_database>
+      <connection/>
+      <schema/>
+      <seqname>SEQ_</seqname>
+      <use_counter>Y</use_counter>
+      <counter_name/>
+      <start_at>1</start_at>
+      <increment_by>1</increment_by>
+      <max_value>999999999</max_value>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>107</xloc>
+      <yloc>504</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Remove buildings parts with area &#x3d; 0</name>
+    <type>FilterRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+<send_true_to>Add database primary key</send_true_to>
+<send_false_to/>
+    <compare>
+<condition>
+ <negated>N</negated>
+ <leftvalue>flaechenmass</leftvalue>
+ <function>&#x3e;</function>
+ <rightvalue/>
+ <value><name>constant</name><type>BigNumber</type><text>0</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask>&#x23;.&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x3b;-&#x23;.&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;&#x23;</mask></value> </condition>
+    </compare>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>109</xloc>
+      <yloc>377</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Unique rows &#x28;ogc_fid&#x29;</name>
+    <type>Unique</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <count_rows>N</count_rows>
+      <count_field/>
+      <reject_duplicate_row>N</reject_duplicate_row>
+      <error_description/>
+    <fields>      <field>        <name>ogc_fid</name>
+        <case_insensitive>N</case_insensitive>
+        </field>      </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>875</xloc>
+      <yloc>189</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
