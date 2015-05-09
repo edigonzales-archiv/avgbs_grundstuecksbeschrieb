@@ -96,7 +96,7 @@ CREATE INDEX idx_av_gb2av_work_t_adr_plz_ort_lage
 CREATE TABLE av_gb2av_work.t_geb_adr
 (
   ogc_fid serial NOT NULL,
-  geb_tid character varying,
+  geb_ogc_fid integer,
   geb_gwr_egid double precision,
   lokalisationsname character varying,
   hausnummer character varying,
