@@ -1,0 +1,4 @@
+java -jar ili2pg.jar --export --dbhost localhost --dbport 5432 --dbdatabase xanadu --dbschema av_avgbs --dbusr stefan --dbpwd ziegler12 --models GB2AV grundstuecksbeschrieb.xtf
+
+
+java -Xms128m -Xmx2048m -jar ili2pg.jar --schemaimport --dbhost localhost --dbport 5432 --dbdatabase xanadu --dbschema av_avgbs_fubar --dbusr stefan --dbpwd ziegler12 --models GB2AV --modeldir ./ --nameByTopic 
